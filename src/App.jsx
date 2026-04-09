@@ -1,46 +1,42 @@
-import React, { useEffect } from 'react'
-import { filterAndSort, getUniqueLanguages } from './utils/filterAndSort'
-
-const dummyRepos = [
-  { name: "repo1", stargazers_count: 500, forks_count: 50, language: "JavaScript" },
-  { name: "repo2", stargazers_count: 1200, forks_count: 30, language: "Python" },
-  { name: "repo3", stargazers_count: 300, forks_count: 100, language: "JavaScript" },
-  { name: "repo4", stargazers_count: 800, forks_count: 20, language: null },
-  { name: "repo5", stargazers_count: 100, forks_count: 200, language: "TypeScript" },
-];
+import React, { useState, useEffect } from 'react'
+import { useDebounce, DEBOUNCE_DELAY } from './hooks/useDebounce'
 
 export const App = () => {
+  // Live input value — updates on every keystroke
+  const [inputValue, setInputValue] = useState("");
+
+  // Debounced value — only updates 300ms after user stops typing
+  const debouncedValue = useDebounce(inputValue, DEBOUNCE_DELAY);
+
+  // Log debounced value whenever it changes
   useEffect(() => {
-    // Test 1: Sort all repos by stars
-    console.log("Test 1 — Sort by stars (all):",
-      filterAndSort(dummyRepos, { sortBy: "stars", language: "all" })
-        .map(r => r.name)
-    );
-
-    // Test 2: Sort all repos by forks
-    console.log("Test 2 — Sort by forks (all):",
-      filterAndSort(dummyRepos, { sortBy: "forks", language: "all" })
-        .map(r => r.name)
-    );
-
-    // Test 3: Filter by JavaScript, sort by stars
-    console.log("Test 3 — JS only, sort by stars:",
-      filterAndSort(dummyRepos, { sortBy: "stars", language: "javascript" })
-        .map(r => r.name)
-    );
-
-    // Test 4: Confirm original array is NOT mutated
-    filterAndSort(dummyRepos, { sortBy: "stars", language: "all" });
-    console.log("Test 4 — Original not mutated:",
-      dummyRepos.map(r => r.name)
-    );
-
-    // Test 5: Get unique languages
-    console.log("Test 5 — Unique languages:", getUniqueLanguages(dummyRepos));
-  }, []);
+    if (debouncedValue) {
+      console.log("Debounced value:", debouncedValue);
+    }
+  }, [debouncedValue]);
 
   return (
-    <div>App</div>
+    <div style={{ padding: "40px", fontFamily: "monospace" }}>
+      <h2>useDebounce Test</h2>
+
+      <input
+        type="text"
+        placeholder="Type something..."
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        style={{
+          padding: "10px 16px",
+          fontSize: "16px",
+          width: "300px",
+          borderRadius: "6px",
+          border: "1px solid #ccc",
+        }}
+      />
+
+      <div style={{ marginTop: "20px" }}>
+        <p><strong>Live value:</strong> {inputValue}</p>
+        <p><strong>Debounced value ({DEBOUNCE_DELAY}ms):</strong> {debouncedValue}</p>
+      </div>
+    </div>
   )
 }
-
