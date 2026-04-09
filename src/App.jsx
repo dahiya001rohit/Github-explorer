@@ -1,12 +1,13 @@
-import { useTheme } from './context/ThemeContext'
+import Loader from './components/Loader'
 
 export const App = () => {
-  const { theme, toggleTheme } = useTheme()
-
   return (
     <div style={{ padding: "40px" }}>
-      <p>Current theme: {theme}</p>
-      <button onClick={toggleTheme}>Toggle Theme</button>
+      <h2>Default loader:</h2>
+      <Loader />
+
+      <h2>Custom message:</h2>
+      <Loader message="Fetching repositories..." />
     </div>
   )
 }

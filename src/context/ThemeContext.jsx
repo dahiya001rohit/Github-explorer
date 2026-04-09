@@ -1,15 +1,13 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { ThemeContext } from "./ThemeContext";
 
 const THEME_KEY = "gh_explorer_theme";
-
-const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem(THEME_KEY) || "light";
   });
 
-  // save to localStorage and toggle dark class on html tag
   useEffect(() => {
     localStorage.setItem(THEME_KEY, theme);
     if (theme === "dark") {
@@ -28,9 +26,4 @@ export function ThemeProvider({ children }) {
       {children}
     </ThemeContext.Provider>
   );
-}
-
-// custom hook for easy access
-export function useTheme() {
-  return useContext(ThemeContext);
 }
