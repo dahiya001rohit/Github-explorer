@@ -1,76 +1,61 @@
 import React, { useEffect } from 'react'
-import { useGitHubSearch } from './hooks/useGitHubSearch'
+import { useUserRepos } from './hooks/useUserRepos'
 
 export const App = () => {
-  const { query, setQuery, users, loading, error } = useGitHubSearch();
+  const { repos, loading, error, selectedUser, fetchRepos } = useUserRepos();
 
-  // Log users array whenever it updates
   useEffect(() => {
-    if (users.length > 0) {
-      console.log("Users found:", users.map(u => ({
-        login: u.login,
-        avatar_url: u.avatar_url,      
-      })));
+    if (repos.length > 0) {
+      console.log(`Repos loaded: ${repos.length} repos, first: "${repos[0].name}"`);
     }
-  }, [users]);
+  }, [repos]);
+
+  const btnStyle = {
+    padding: "10px 20px",
+    fontSize: "14px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    cursor: "pointer",
+    marginRight: "10px",
+  };
 
   return (
     <div style={{ padding: "40px", fontFamily: "monospace" }}>
-      <h2>useGitHubSearch Test</h2>
+      <h2>useUserRepos Test</h2>
 
-      <input
-        type="text"
-        placeholder="Search GitHub users..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        style={{
-          padding: "10px 16px",
-          fontSize: "16px",
-          width: "350px",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-        }}
-      />
+      <div style={{ marginBottom: "20px" }}>
+        <button style={btnStyle} onClick={() => fetchRepos("torvalds")}>
+          Load torvalds repos
+        </button>
+        <button style={btnStyle} onClick={() => fetchRepos("thisuserdoesnotexist123456789")}>
+          Load invalid user
+        </button>
+      </div>
 
-      {/* Loading state */}
-      {loading && (
-        <p style={{ color: "#666", marginTop: "16px" }}>Loading...</p>
+      {loading && <p style={{ color: "#666" }}>Loading repos...</p>}
+
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+
+      {!loading && !error && selectedUser && repos.length === 0 && (
+        <p style={{ color: "#999" }}>No public repositories found</p>
       )}
 
-      {/* Error state */}
-      {error && (
-        <p style={{ color: "red", marginTop: "16px" }}>Error: {error}</p>
-      )}
-
-      {/* Empty state — query exists but no results */}
-      {!loading && !error && query && users.length === 0 && (
-        <p style={{ color: "#999", marginTop: "16px" }}>No users found</p>
-      )}
-
-      {/* Results */}
-      {users.length > 0 && (
-        <div style={{ marginTop: "16px" }}>
-          <p><strong>Found {users.length} users:</strong></p>
+      {repos.length > 0 && (
+        <div>
+          <p><strong>{selectedUser}'s repos ({repos.length}):</strong></p>
           <ul style={{ listStyle: "none", padding: 0 }}>
-            {users.map((user) => (
-              <li key={user.id} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "8px 0",
-                borderBottom: "1px solid #eee",
-              }}>
-                <img
-                  src={user.avatar_url}
-                  alt={user.login}
-                  style={{ width: 40, height: 40, borderRadius: "50%" }}
-                />
-                <span>{user.login}</span>
+            {repos.slice(0, 10).map((repo) => (
+              <li key={repo.id} style={{ padding: "6px 0", borderBottom: "1px solid #eee" }}>
+                ⭐ {repo.stargazers_count} — <strong>{repo.name}</strong>
               </li>
             ))}
           </ul>
+          {repos.length > 10 && (
+            <p style={{ color: "#999" }}>...and {repos.length - 10} more</p>
+          )}
         </div>
       )}
     </div>
   )
 }
+

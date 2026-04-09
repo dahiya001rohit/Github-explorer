@@ -1,24 +1,10 @@
 import axios from "axios";
 
-// ============================================
-// GitHub API Configuration
-// ============================================
-
-// Array of GitHub Personal Access Tokens for rotating through API requests.
-// Add your tokens here to increase rate limits (60 req/hr unauthenticated → 5000 req/hr per token).
-// Example: ["ghp_abc123...", "ghp_def456..."]
+// Add GitHub PATs here to increase rate limits (60/hr → 5000/hr per token)
 export const GITHUB_TOKENS = [];
 
-// GitHub REST API v3 base URL — all requests are relative to this.
 export const BASE_URL = "https://api.github.com";
 
-// ============================================
-// Axios Instance
-// ============================================
-
-// Pre-configured axios instance with GitHub API defaults.
-// Using axios.create() lets us set baseURL and headers once,
-// so every request automatically inherits them.
 const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -26,28 +12,12 @@ const apiClient = axios.create({
   },
 });
 
-// ============================================
-// Main Fetch Function
-// ============================================
-
-/**
- * githubFetch — Makes an authenticated (or unauthenticated) request to the GitHub API.
- *
- * @param {string} url - The API endpoint path (e.g., "/users/torvalds")
- * @returns {Promise<object>} - The parsed JSON response data
- *
- * Behavior:
- * - If no tokens are configured, makes an unauthenticated request.
- * - If tokens exist, tries each one sequentially.
- * - On a 403 (rate limit / forbidden), moves to the next token.
- * - If all tokens are exhausted, throws an error.
- */
 export async function githubFetch(url) {
-  // --- Case 1: No tokens available — make unauthenticated request ---
+  // No tokens — make unauthenticated request
   if (GITHUB_TOKENS.length === 0) {
     try {
       const response = await apiClient.get(url);
-      return response.data; // axios auto-parses JSON, so we return .data directly
+      return response.data;
     } catch (error) {
       console.error("API request failed (no auth):", error.message);
       if (error.response?.status === 404) throw new Error("User not found.")
@@ -57,29 +27,24 @@ export async function githubFetch(url) {
     }
   }
 
-  // --- Case 2: Tokens available — rotate through them ---
+  // Rotate through tokens, skip to next on 403
   for (let i = 0; i < GITHUB_TOKENS.length; i++) {
     const token = GITHUB_TOKENS[i];
 
     try {
-      // Attach the current token as a Bearer authorization header
       const response = await apiClient.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      return response.data; // Success — return parsed JSON data
+      return response.data;
     } catch (error) {
-      // If we get a 403 (Forbidden / Rate Limited), try the next token
       if (error.response && error.response.status === 403) {
-        console.warn(
-          `Token ${i + 1} hit 403 (rate limit/forbidden). Trying next token...`
-        );
-        continue; // Move to the next token in the array
+        console.warn(`Token ${i + 1} hit 403. Trying next token...`);
+        continue;
       }
 
-      // For any other error (404, 500, network error, etc.), throw immediately
       if (error.response?.status === 404) throw new Error("User not found.")
       if (!error.response) throw new Error("Something went wrong. Check your connection.")
       console.error(`API request failed with token ${i + 1}:`, error.message);
@@ -87,6 +52,6 @@ export async function githubFetch(url) {
     }
   }
 
-  // --- Case 3: All tokens exhausted without a successful response ---
   throw new Error("All API keys exhausted. Try again later.");
 }
+
