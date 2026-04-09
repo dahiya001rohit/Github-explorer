@@ -1,13 +1,16 @@
-import Loader from './components/Loader'
+import { ErrorMessage } from './components/ErrorMessage'
 
 export const App = () => {
   return (
     <div style={{ padding: "40px" }}>
-      <h2>Default loader:</h2>
-      <Loader />
+      <h2>Default error:</h2>
+      <ErrorMessage />
 
-      <h2>Custom message:</h2>
-      <Loader message="Fetching repositories..." />
+      <h2>Custom error:</h2>
+      <ErrorMessage message="User not found." />
+
+      <h2>Rate limit error:</h2>
+      <ErrorMessage message="Rate limit exceeded. Try again later." />
     </div>
   )
 }
