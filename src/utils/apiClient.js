@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Add GitHub PATs here to increase rate limits (60/hr → 5000/hr per token)
 export const GITHUB_TOKENS = [
   import.meta.env.VITE_GITHUB_TOKEN_1,
   import.meta.env.VITE_GITHUB_TOKEN_2,
@@ -15,46 +14,64 @@ const apiClient = axios.create({
   },
 });
 
-export async function githubFetch(url) {
-  // No tokens — make unauthenticated request
-  if (GITHUB_TOKENS.length === 0) {
-    try {
-      const response = await apiClient.get(url);
-      return response.data;
-    } catch (error) {
-      console.error("API request failed (no auth):", error.message);
-      if (error.response?.status === 404) throw new Error("User not found.")
-      if (error.response?.status === 403) throw new Error("Rate limit exceeded. Try again later.")
-      if (!error.response) throw new Error("Something went wrong. Check your connection.")
-      throw error;
-    }
-  }
+// makes a single request with optional token
+async function makeRequest(url, token = null) {
+  const config = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : {}
 
-  // Rotate through tokens, skip to next on 403
-  for (let i = 0; i < GITHUB_TOKENS.length; i++) {
-    const token = GITHUB_TOKENS[i];
-
-    try {
-      const response = await apiClient.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 403) {
-        console.warn(`Token ${i + 1} hit 403. Trying next token...`);
-        continue;
-      }
-
-      if (error.response?.status === 404) throw new Error("User not found.")
-      if (!error.response) throw new Error("Something went wrong. Check your connection.")
-      console.error(`API request failed with token ${i + 1}:`, error.message);
-      throw error;
-    }
-  }
-
-  throw new Error("All API keys exhausted. Try again later.");
+  const response = await apiClient.get(url, config)
+  return response.data
 }
 
+// handles errors consistently
+function handleError(error) {
+  if (error.response?.status === 404) throw new Error("User not found.")
+  if (error.response?.status === 403) throw new Error("Rate limit exceeded. Try again later.")
+  if (!error.response) throw new Error("Something went wrong. Check your connection.")
+  throw error
+}
+
+export async function githubFetch(url) {
+  // try each token first
+  for (let i = 0; i < GITHUB_TOKENS.length; i++) {
+    try {
+      return await makeRequest(url, GITHUB_TOKENS[i])
+    } catch (error) {
+      if (error.response?.status === 403) {
+        console.warn(`Token ${i + 1} hit 403. Trying next...`)
+        continue
+      }
+      handleError(error)
+    }
+  }
+
+  // all tokens exhausted or no tokens — fallback to unauthenticated
+  console.warn("Falling back to unauthenticated request...")
+  try {
+    return await makeRequest(url)
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+// fetches ALL pages of a paginated endpoint
+export async function githubFetchAll(baseUrl) {
+  let page = 1
+  let allData = []
+
+  while (true) {
+    const separator = baseUrl.includes('?') ? '&' : '?'
+    const data = await githubFetch(`${baseUrl}${separator}per_page=100&page=${page}`)
+
+    if (!data || data.length === 0) break
+
+    allData = [...allData, ...data]
+
+    if (data.length < 100) break
+
+    page++
+  }
+
+  return allData
+}

@@ -16,7 +16,7 @@ export const RepoCard = ({ repo, isBookmarked, onBookmark }) => {
         </a>
         <button
           onClick={() => onBookmark(repo)}
-          className={`px-2 py-0.5 border rounded-full text-[10px] font-medium uppercase shrink-0 transition-colors
+          className={`px-2 py-0.5 border rounded-full text-[10px] font-medium uppercase shrink-0 transition-colors cursor-pointer
             ${isBookmarked
               ? "bg-[var(--color-text)] dark:bg-[var(--color-text-dark)] text-[var(--color-surface)] dark:text-[var(--color-surface-dark)] border-[var(--color-text)] dark:border-[var(--color-text-dark)]"
               : "border-[var(--color-border)] dark:border-[var(--color-border-dark)] text-[var(--color-text-muted)] dark:text-[var(--color-muted-dark)] hover:bg-[var(--color-bg)] dark:hover:bg-[var(--color-bg-dark)]"

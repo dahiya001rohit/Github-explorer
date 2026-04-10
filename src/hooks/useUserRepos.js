@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { githubFetch } from "../utils/apiClient";
+import { githubFetchAll } from "../utils/apiClient";
 
 export function useUserRepos() {
   const [repos, setRepos] = useState([]);
@@ -19,10 +19,8 @@ export function useUserRepos() {
     setError(null);
 
     try {
-      const response = await githubFetch(
-        `/users/${username}/repos?per_page=100&sort=updated`
-      );
-      setRepos(response || []);
+      const data = await githubFetchAll(`/users/${username}/repos?sort=updated`)
+      setRepos(data || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -32,5 +30,3 @@ export function useUserRepos() {
 
   return { repos, loading, error, selectedUser, fetchRepos };
 }
-
-

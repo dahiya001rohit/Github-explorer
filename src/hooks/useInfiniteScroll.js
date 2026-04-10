@@ -8,20 +8,18 @@ export function useInfiniteScroll(repos) {
   const scrollContainerRef = useRef(null);
   const observerRef = useRef(null);
 
-  // Reset visible count when repos array changes (new user selected)
+  // reset when repos changes
   useEffect(() => {
     setVisibleCount(ITEMS_PER_LOAD);
   }, [repos]);
 
-  // Update visible repos slice whenever count or repos changes
+  // update visible slice
   useEffect(() => {
     setVisibleRepos(repos.slice(0, visibleCount));
   }, [visibleCount, repos]);
 
-  // Callback ref for sentinel — sets up observer when element mounts
   const sentinelRef = useCallback(
     (node) => {
-      // Disconnect previous observer
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
@@ -37,7 +35,7 @@ export function useInfiniteScroll(repos) {
             });
           }
         },
-        { root: scrollContainerRef.current, threshold: 0.1 }
+        { root: null, threshold: 0.1 } // ← root: null = viewport
       );
 
       observerRef.current.observe(node);
@@ -45,7 +43,6 @@ export function useInfiniteScroll(repos) {
     [repos.length]
   );
 
-  // Cleanup observer on unmount
   useEffect(() => {
     return () => {
       if (observerRef.current) observerRef.current.disconnect();
@@ -59,5 +56,3 @@ export function useInfiniteScroll(repos) {
     hasMore: visibleCount < repos.length,
   };
 }
-
-

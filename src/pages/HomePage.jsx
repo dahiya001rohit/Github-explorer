@@ -1,8 +1,6 @@
 import { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ThemeContext } from '../context/ThemeContext'
-import { useGitHubSearch } from '../hooks/useGitHubSearch'
-import { useUserRepos } from '../hooks/useUserRepos'
 import { useBookmarks } from '../hooks/useBookmarks'
 import { SearchBar } from '../features/search/SearchBar'
 import UserCard from '../features/search/UserCard'
@@ -10,10 +8,10 @@ import RepoList from '../features/repos/RepoList'
 import { Loader } from '../components/Loader'
 import { EmptyState } from '../components/EmptyState'
 
-export const HomePage = () => {
+export const HomePage = ({ searchState, repoState }) => {
   const { theme, toggleTheme } = useContext(ThemeContext)
-  const { query, setQuery, users, loading: searchLoading, error: searchError } = useGitHubSearch()
-  const { repos, loading: repoLoading, error: repoError, selectedUser, fetchRepos } = useUserRepos()
+  const { query, setQuery, users, loading: searchLoading, error: searchError } = searchState
+  const { repos, loading: repoLoading, error: repoError, selectedUser, fetchRepos } = repoState
   const { bookmarks, isBookmarked, addBookmark, removeBookmark } = useBookmarks()
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false)
 
