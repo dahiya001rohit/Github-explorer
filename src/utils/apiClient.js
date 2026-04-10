@@ -1,7 +1,10 @@
 import axios from "axios";
 
 // Add GitHub PATs here to increase rate limits (60/hr → 5000/hr per token)
-export const GITHUB_TOKENS = [];
+export const GITHUB_TOKENS = [
+  import.meta.env.VITE_GITHUB_TOKEN_1,
+  import.meta.env.VITE_GITHUB_TOKEN_2,
+].filter(Boolean)
 
 export const BASE_URL = "https://api.github.com";
 
