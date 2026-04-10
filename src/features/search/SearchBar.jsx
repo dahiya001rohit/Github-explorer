@@ -1,12 +1,12 @@
 export const SearchBar = ({ query, setQuery }) => {
   return (
-     <div className="w-full px-4 py-3">
+    <div className="w-full">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search GitHub users..."
-        className="w-full px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-[var(--color-surface-dark)] dark:text-[var(--color-text-dark)] dark:border-[var(--color-border-dark)] dark:placeholder-[var(--color-muted-dark)] dark:focus:ring-[var(--color-primary)]"
+        className="w-full h-8 px-4 rounded-md border border-[var(--color-border)] dark:border-[var(--color-border-dark)] bg-[var(--color-bg)] dark:bg-[var(--color-bg-dark)] text-[var(--color-text)] dark:text-[var(--color-text-dark)] placeholder-[var(--color-text-muted)] dark:placeholder-[var(--color-muted-dark)] focus:outline-none focus:ring-1 focus:ring-[var(--color-text)] dark:focus:ring-[var(--color-text-dark)] focus:border-[var(--color-text)] dark:focus:border-[var(--color-text-dark)] transition-all text-sm"
       />
     </div>
   )

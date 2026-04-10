@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import HomePage from './pages/HomePage'
-import BookmarksPage from './pages/BookmarksPage'
+import {HomePage} from './pages/HomePage'
+import {BookmarksPage} from './pages/BookmarksPage'
 
 export const App = () => {
   return (

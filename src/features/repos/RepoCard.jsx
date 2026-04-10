@@ -2,58 +2,56 @@ import { formatNumber } from '../../utils/formatNumbers'
 
 export const RepoCard = ({ repo, isBookmarked, onBookmark }) => {
   return (
-    <div className="p-4 rounded-lg border border-[var(--color-border)] dark:border-[var(--color-border-dark)] bg-[var(--color-surface)] dark:bg-[var(--color-surface-dark)] flex flex-col gap-2 hover:shadow-md transition-shadow">
+    <div className="pb-6 border-b border-[var(--color-border)] dark:border-[var(--color-border-dark)]">
 
-      {/* repo name + bookmark */}
-      <div className="flex items-center justify-between gap-2">
+      {/* repo name + bookmark button */}
+      <div className="flex justify-between items-start mb-1">
         <a
           href={repo.html_url}
           target="_blank"
           rel="noreferrer"
-          className="text-sm font-semibold text-[var(--color-primary)] hover:underline truncate"
+          className="text-lg font-bold text-[var(--color-text)] dark:text-[var(--color-text-dark)] hover:underline cursor-pointer"
         >
           {repo.name}
         </a>
         <button
           onClick={() => onBookmark(repo)}
-          className={`text-xs font-medium px-2 py-1 rounded-full border transition-colors shrink-0
+          className={`px-2 py-0.5 border rounded-full text-[10px] font-medium uppercase shrink-0 transition-colors
             ${isBookmarked
-              ? "bg-[#7C3AED] text-white border-[#7C3AED]"
-              : "bg-[#EDE9FE] text-[#7C3AED] border-[#C4B5FD] hover:bg-[#DDD6FE] dark:bg-[#2D1F5E] dark:text-[#C4B5FD] dark:border-[#4C3A8A] dark:hover:bg-[#3D2B7A]"
+              ? "bg-[var(--color-text)] dark:bg-[var(--color-text-dark)] text-[var(--color-surface)] dark:text-[var(--color-surface-dark)] border-[var(--color-text)] dark:border-[var(--color-text-dark)]"
+              : "border-[var(--color-border)] dark:border-[var(--color-border-dark)] text-[var(--color-text-muted)] dark:text-[var(--color-muted-dark)] hover:bg-[var(--color-bg)] dark:hover:bg-[var(--color-bg-dark)]"
             }`}
         >
           {isBookmarked ? "Bookmarked" : "Bookmark"}
         </button>
       </div>
 
-      {/* description + language inline justified */}
-      <div className="flex items-start justify-between gap-2">
-        {repo.description ? (
-          <p className="text-xs text-[var(--color-muted)] dark:text-[var(--color-muted-dark)] line-clamp-2 flex-1">
-            {repo.description}
-          </p>
-        ) : (
-          <p className="text-xs text-[var(--color-muted)] dark:text-[var(--color-muted-dark)] italic flex-1">
-            No description provided.
-          </p>
-        )}
-        {repo.language && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#7C3AED] dark:bg-[#2D1F5E] dark:text-[#C4B5FD] shrink-0">
-            {repo.language}
-          </span>
-        )}
-      </div>
+      {/* description */}
+      <p className="text-sm text-[var(--color-text-muted)] dark:text-[var(--color-muted-dark)] mb-4 leading-normal">
+        {repo.description || "No description provided."}
+      </p>
 
-      {/* stars + forks */}
-      <div className="flex items-center gap-4 mt-1">
-        <span className="text-xs text-[var(--color-muted)] dark:text-[var(--color-muted-dark)] flex items-center gap-1">
-          ⭐ {formatNumber(repo.stargazers_count)}
-        </span>
-        <span className="text-xs text-[var(--color-muted)] dark:text-[var(--color-muted-dark)] flex items-center gap-1">
-          🍴 {formatNumber(repo.forks_count)}
-        </span>
+      {/* stats */}
+      <div className="flex flex-wrap items-center gap-4 text-[11px] text-[var(--color-text-muted)] dark:text-[var(--color-muted-dark)] font-medium">
+        {repo.language && (
+          <div className="flex items-center gap-1">
+            <span className="w-3 h-3 rounded-full bg-[var(--color-text)] dark:bg-[var(--color-text-dark)]" />
+            {repo.language}
+          </div>
+        )}
+        <div className="flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+          </svg>
+          {formatNumber(repo.stargazers_count)}
+        </div>
+        <div className="flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/>
+          </svg>
+          {formatNumber(repo.forks_count)}
+        </div>
       </div>
     </div>
   )
 }
-

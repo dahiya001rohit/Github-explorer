@@ -6,17 +6,20 @@
   --color-primary: #7C3AED;
   --color-primary-hover: #6D28D9;
 
-  --color-bg: #F3F4F6;
+  /* GitHub light mode */
+  --color-bg: #F6F8FA;
   --color-surface: #FFFFFF;
-  --color-text: #111111;
-  --color-border: #E5E7EB;
-  --color-muted: #6B7280;
+  --color-text: #1F2328;
+  --color-border: #D0D7DE;
+  --color-muted: #656D76;
+  --color-text-muted: #656D76;
 
-  --color-bg-dark: #0F0F0F;
-  --color-surface-dark: #1A1A1A;
-  --color-text-dark: #FFFFFF;
-  --color-border-dark: #2D2D2D;
-  --color-muted-dark: #9CA3AF;
+  /* GitHub dark mode */
+  --color-bg-dark: #0D1117;
+  --color-surface-dark: #161B22;
+  --color-text-dark: #E6EDF3;
+  --color-border-dark: #30363D;
+  --color-muted-dark: #848D97;
 }
 
 body {
@@ -29,3 +32,8 @@ body {
   background-color: var(--color-bg-dark);
   color: var(--color-text-dark);
 }
+
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 10px; }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border-dark); }
