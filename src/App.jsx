@@ -1,18 +1,32 @@
-import { useState } from 'react'
-import {RepoFilters} from './features/repos/RepoFilters'
+import { useUserRepos } from './hooks/useUserRepos'
+import { useBookmarks } from './hooks/useBookmarks'
+import RepoList from './features/repos/RepoList'
 
 export const App = () => {
-  const [filters, setFilters] = useState({ sortBy: "", language: "all" })
+  const { repos, loading, error, selectedUser, fetchRepos } = useUserRepos()
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+
+  const handleBookmark = (repo) => {
+    isBookmarked(repo.id) ? removeBookmark(repo.id) : addBookmark(repo)
+  }
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h2>RepoFilters test:</h2>
-      <RepoFilters
-        filters={filters}
-        setFilters={setFilters}
+    <div style={{ padding: "40px", maxWidth: "600px" }}>
+      <h2>RepoList test:</h2>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+        <button onClick={() => fetchRepos("torvalds")}>Load torvalds</button>
+        <button onClick={() => fetchRepos("dahiya001rohit")}>Load mine</button>
+        <button onClick={() => fetchRepos("thisuserdoesnotexist123456")}>Load invalid</button>
+      </div>
+      <RepoList
+        key={selectedUser}
+        repos={repos}
+        loading={loading}
+        error={error}
+        selectedUser={selectedUser}
+        isBookmarked={isBookmarked}
+        onBookmark={handleBookmark}
       />
-      <p>Sort by: {filters.sortBy || "none"}</p>
-      <p>Language: {filters.language}</p>
     </div>
   )
 }

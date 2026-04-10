@@ -5,11 +5,10 @@ export function filterAndSort(repos, { sortBy, language }) {
 
   // Filter by language (case-insensitive), skip if "all" or empty
   if (language && language.toLowerCase() !== "all") {
-    filtered = repos.filter(
-      (repo) =>
-        repo.language &&
-        repo.language.toLowerCase() === language.toLowerCase()
-    );
+    filtered = repos.filter((repo) => {
+      if (!language || language === "all") return true
+      return repo.language?.toLowerCase().includes(language.toLowerCase())
+    })
   }
 
   // Shallow copy to avoid mutating original
