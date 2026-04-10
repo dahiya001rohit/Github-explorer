@@ -10,7 +10,6 @@ import { EmptyState } from '../../components/EmptyState'
 const RepoList = ({ repos, loading, error, selectedUser, isBookmarked, onBookmark }) => {
   const [filters, setFilters] = useState({ sortBy: "", language: "all" })
   
-  // Memoize filteredRepos so the reference only changes when ACTUAL data changes
   const filteredRepos = useMemo(() => 
     filterAndSort(repos, filters), 
     [repos, filters]
@@ -31,13 +30,13 @@ const RepoList = ({ repos, loading, error, selectedUser, isBookmarked, onBookmar
   )
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full h-full">
       <RepoFilters filters={filters} setFilters={setFilters} />
 
       {filteredRepos.length === 0 ? (
         <EmptyState message="No repositories match your filters." />
       ) : (
-        <div ref={scrollContainerRef} className="flex flex-col gap-3 p-4 h-[500px] overflow-y-auto">
+        <div ref={scrollContainerRef} className="flex flex-col gap-3 p-4 flex-1 overflow-y-auto">
           {visibleRepos.map((repo) => (
             <RepoCard
               key={repo.id}

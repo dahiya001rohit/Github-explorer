@@ -75,6 +75,7 @@ const HomePage = () => {
         {/* repo panel */}
         <div className="flex-1 overflow-y-auto h-full">
           <RepoList
+            key={selectedUser}
             repos={repos}
             loading={repoLoading}
             error={repoError}
