@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { filterAndSort } from '../../utils/filterAndSort'
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll'
 import { RepoCard } from './RepoCard'

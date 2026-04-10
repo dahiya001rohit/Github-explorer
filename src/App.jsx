@@ -1,10 +1,13 @@
-import { useUserRepos } from './hooks/useUserRepos'
 import { useBookmarks } from './hooks/useBookmarks'
-import RepoList from './features/repos/RepoList'
+import { BookmarkList } from './features/bookmarks/BookmarkList'
+
+const dummyRepos = [
+  { id: 1, name: "linux", html_url: "https://github.com/torvalds/linux", description: "Linux kernel", stargazers_count: 180000, forks_count: 52000, language: "C" },
+  { id: 2, name: "react", html_url: "https://github.com/facebook/react", description: "React library", stargazers_count: 220000, forks_count: 45000, language: "JavaScript" },
+]
 
 export const App = () => {
-  const { repos, loading, error, selectedUser, fetchRepos } = useUserRepos()
-  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks()
+  const { bookmarks, addBookmark, isBookmarked, removeBookmark } = useBookmarks()
 
   const handleBookmark = (repo) => {
     isBookmarked(repo.id) ? removeBookmark(repo.id) : addBookmark(repo)
@@ -12,18 +15,13 @@ export const App = () => {
 
   return (
     <div style={{ padding: "40px", maxWidth: "600px" }}>
-      <h2>RepoList test:</h2>
+      <h2>BookmarkList test:</h2>
       <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-        <button onClick={() => fetchRepos("torvalds")}>Load torvalds</button>
-        <button onClick={() => fetchRepos("dahiya001rohit")}>Load mine</button>
-        <button onClick={() => fetchRepos("thisuserdoesnotexist123456")}>Load invalid</button>
+        <button onClick={() => addBookmark(dummyRepos[0])}>Bookmark linux</button>
+        <button onClick={() => addBookmark(dummyRepos[1])}>Bookmark react</button>
       </div>
-      <RepoList
-        key={selectedUser}
-        repos={repos}
-        loading={loading}
-        error={error}
-        selectedUser={selectedUser}
+      <BookmarkList
+        bookmarks={bookmarks}
         isBookmarked={isBookmarked}
         onBookmark={handleBookmark}
       />
