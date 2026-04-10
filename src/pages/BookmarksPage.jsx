@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { ThemeContext } from '../context/ThemeContext'
 import { useBookmarks } from '../hooks/useBookmarks'
 import {BookmarkList} from '../features/bookmarks/BookmarkList'
+import { Link } from 'react-router-dom'
 
 const BookmarksPage = () => {
   const { theme, toggleTheme } = useContext(ThemeContext)
@@ -20,12 +21,12 @@ const BookmarksPage = () => {
           GitHub Explorer
         </span>
         <div className="flex items-center gap-4">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="text-sm text-[var(--color-muted)] dark:text-[var(--color-muted-dark)] hover:text-[var(--color-primary)] transition-colors"
           >
             ← Back to Search
-          </a>
+          </Link>
           <button
             onClick={toggleTheme}
             className="text-sm px-3 py-1.5 rounded-full border border-[var(--color-border)] dark:border-[var(--color-border-dark)] text-[var(--color-text)] dark:text-[var(--color-text-dark)] hover:border-[var(--color-primary)] transition-colors"

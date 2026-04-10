@@ -7,6 +7,7 @@ import UserCard from '../features/search/UserCard'
 import RepoList from '../features/repos/RepoList'
 import { Loader } from '../components/Loader'
 import { EmptyState } from '../components/EmptyState'
+import { Link } from 'react-router-dom'
 
 const HomePage = () => {
   const { theme, toggleTheme } = useTheme()
@@ -27,12 +28,12 @@ const HomePage = () => {
           GitHub Explorer
         </span>
         <div className="flex items-center gap-4">
-          <a
-            href="/bookmarks"
+          <Link
+            to="/bookmarks"
             className="text-sm text-[var(--color-muted)] dark:text-[var(--color-muted-dark)] hover:text-[var(--color-primary)] transition-colors"
           >
             Bookmarks {bookmarks.length > 0 && `(${bookmarks.length})`}
-          </a>
+          </Link>
           <button
             onClick={toggleTheme}
             className="text-sm px-3 py-1.5 rounded-full border border-[var(--color-border)] dark:border-[var(--color-border-dark)] text-[var(--color-text)] dark:text-[var(--color-text-dark)] hover:border-[var(--color-primary)] transition-colors"
